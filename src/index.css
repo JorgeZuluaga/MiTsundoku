@@ -10,6 +10,8 @@
   --card-border: #e5e7eb;
   --hero-from: #fefce8; /* amber-50 */
   --hero-to: #e0e7ff;   /* indigo-50 */
+  --link: #1d4ed8;      /* blue-700 */
+  --link-hover: #1e40af;/* blue-800 */
 }
 
 /* Tema oscuro */
@@ -21,6 +23,8 @@
   --card-border: #1f2937; /* gray-800 */
   --hero-from: #0f172a; /* slate-900 */
   --hero-to: #1f2937;   /* slate-800 */
+  --link: #93c5fd;      /* blue-300 */
+  --link-hover: #bfdbfe;/* blue-200 */
 }
 
 html, body, #root {
@@ -32,6 +36,15 @@ body {
   font-family: var(--font-sans);
   color: var(--text);
   background: var(--bg-page);
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--link-hover);
 }
 
 /* Utilidades ligeras cuando no esté Tailwind presente */
