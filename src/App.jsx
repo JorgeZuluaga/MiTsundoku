@@ -288,9 +288,8 @@ export default function App() {
         <header style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div className="hero" style={{ flex: 1 }}>
             <h1 className="hero-title">Mi tsundoku</h1>
-            <p style={{ color: "var(--muted)", marginTop: 6 }}>
-              En el corazón del tsundoku reside la ilusión de que algún día, en un futuro no muy lejano,
-              encontraremos el tiempo y la energía para sumergirnos en esas historias que tanto anhelamos
+            <p style={{ color: "var(--muted)", marginTop: 6, fontStyle: 'italic' }}>
+              En el corazón del tsundoku reside la ilusión de encontrar el tiempo para leer lo que anhelamos
             </p>
           </div>
           <div>
@@ -309,6 +308,14 @@ export default function App() {
             </button>
           </div>
         </header>
+
+        {/* Intro info box */}
+        <div className="card" style={{ marginBottom: 16 }}>
+          <p style={{ margin: 0 }}>
+            Con esta aplicación podrás ver estadísticas de interés sobre los libros que tienes registrados en tu base
+            de datos de <a href="https://apps.apple.com/us/app/bookbuddy-book-tracker/id395150347" target="_blank" rel="noopener noreferrer">BookBuddy</a>. Para ello descarga la base de datos de la aplicación en formato .csv y sube aquí el archivo. Puedes ver una demostración presionando el botón "Usar datos de prueba". ¡A Tsundokar!
+          </p>
+        </div>
 
         {/* Uploader + resumen en un grid de 1-4 columnas responsivo */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16 }}>
