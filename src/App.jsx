@@ -319,6 +319,39 @@ export default function App() {
               <div style={{ marginTop: 12 }}>
                 <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => handleFile(e.target.files?.[0])} />
               </div>
+          <div style={{ marginTop: 8 }}>
+            <button
+              onClick={async () => {
+                try {
+                  // Raw file from GitHub repo; adjust if you fork
+                  const url = 'https://raw.githubusercontent.com/JorgeZuluaga/MiTsundoku/main/BookBoddy-Test.csv';
+                  const res = await fetch(url, { cache: 'no-store' });
+                  if (!res.ok) throw new Error('No se pudo descargar el CSV de prueba');
+                  const text = await res.text();
+                  const XLSX = await import('xlsx');
+                  const wb = XLSX.read(text, { type: 'string' });
+                  const ws = wb.Sheets[wb.SheetNames[0]];
+                  const json = XLSX.utils.sheet_to_json(ws, { defval: null });
+                  setRows(json);
+                  setFileName('BookBoddy-Test.csv');
+                } catch (e) {
+                  console.error(e);
+                  alert('No pude cargar los datos de prueba.');
+                }
+              }}
+              style={{
+                marginTop: 4,
+                padding: '8px 12px',
+                borderRadius: 10,
+                border: `1px solid var(--card-border)`,
+                background: 'var(--card-bg)',
+                color: 'var(--text)',
+                cursor: 'pointer'
+              }}
+            >
+              Usar datos de prueba
+            </button>
+          </div>
               {fileName && <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 8 }}>Archivo cargado: {fileName}</p>}
             </div>
           </div>
