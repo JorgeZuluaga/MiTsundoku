@@ -288,13 +288,10 @@ export default function App() {
         <header style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div className="hero" style={{ flex: 1 }}>
             <h1 className="hero-title">Mi tsundoku</h1>
-            <p style={{ color: "var(--muted)", marginTop: 6 }}>Sube tu archivo CSV/XLSX de BookBuddy para ver estadísticas.</p>
-            {/* Decorative icons: books and cats via emoji for zero-dep visuals */}
-            <div className="hero-icons" aria-hidden>
-              <div style={{ position: 'absolute', right: 12, bottom: 6, fontSize: 48, opacity: 0.25 }}>📚</div>
-              <div style={{ position: 'absolute', right: 64, top: 8, fontSize: 36, opacity: 0.2 }}>🐈</div>
-              <div style={{ position: 'absolute', left: 16, bottom: 8, fontSize: 32, opacity: 0.2 }}>🐱‍👓</div>
-            </div>
+            <p style={{ color: "var(--muted)", marginTop: 6 }}>
+              En el corazón del tsundoku reside la ilusión de que algún día, en un futuro no muy lejano,
+              encontraremos el tiempo y la energía para sumergirnos en esas historias que tanto anhelamos
+            </p>
           </div>
           <div>
             <button
