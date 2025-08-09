@@ -135,6 +135,19 @@ function coerceDate(value) {
 export default function App() {
   const [rows, setRows] = useState([]);
   const [fileName, setFileName] = useState("");
+  const [theme, setTheme] = useState(() => {
+    if (typeof localStorage !== "undefined") {
+      return localStorage.getItem("theme") || "light";
+    }
+    return "light";
+  });
+
+  // aplicar atributo data-theme al <html> para habilitar tokens CSS
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    try { localStorage.setItem("theme", theme); } catch {}
+  }, [theme]);
 
   async function handleFile(file) {
     if (!file) return;
@@ -269,45 +282,72 @@ export default function App() {
   const compact = useMemo(() => new Intl.NumberFormat("es-CO", { notation: "compact", maximumFractionDigits: 1 }), []);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <div className="max-w-7xl mx-auto p-6">
-        <header className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-semibold">Reporte de adquisición y valor de libros</h1>
-          <div />
+    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text)" }}>
+      <div className="container">
+        <header style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>Reporte de libros</h1>
+            <p style={{ color: "var(--muted)", marginTop: 6 }}>Sube tu archivo CSV/XLSX de BookBuddy para ver estadísticas.</p>
+          </div>
+          <div>
+            <button
+              onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 10,
+                border: `1px solid var(--card-border)`,
+                background: "var(--card-bg)",
+                color: "var(--text)",
+                cursor: "pointer"
+              }}
+            >
+              {theme === "light" ? "Oscuro" : "Claro"}
+            </button>
+          </div>
         </header>
 
-        {/* Uploader */}
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 flex flex-col items-center justify-center text-center shadow-sm">
-          <Upload className="h-10 w-10 mb-3" />
-          <p className="font-medium">Sube tu archivo <span className="font-semibold">BookBuddy</span> (.csv o .xlsx)</p>
-          <p className="text-sm text-gray-500">Debe incluir columnas: <em>Title</em>, <em>Purchase Date</em>, <em>Purchase Place</em>, <em>Purchase Price</em>.</p>
-          <div className="mt-4">
-            <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => handleFile(e.target.files?.[0])} />
+        {/* Uploader + resumen en un grid de 1-4 columnas responsivo */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16 }}>
+          <div className="card" style={{ gridColumn: "span 12" }}>
+            <div style={{ display: "flex", alignItems: "center", flexDirection: "column", textAlign: "center" }}>
+              <Upload style={{ height: 40, width: 40, marginBottom: 8 }} />
+              <div>
+                <p style={{ margin: 0 }}>Archivo <strong>BookBuddy</strong> (.csv o .xlsx)</p>
+                <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>Incluye columnas: Title, Purchase Date, Purchase Place, Purchase Price.</p>
+              </div>
+              <div style={{ marginTop: 12 }}>
+                <input type="file" accept=".csv,.xlsx,.xls" onChange={(e) => handleFile(e.target.files?.[0])} />
+              </div>
+              {fileName && <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 8 }}>Archivo cargado: {fileName}</p>}
+            </div>
           </div>
-          {fileName && <p className="text-xs text-gray-500 mt-2">Archivo cargado: {fileName}</p>}
+
+          {/* KPI cards */}
+          <div className="card" style={{ gridColumn: "span 12" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 12 }}>
+              <div style={{ gridColumn: "span 12 / span 12" }} className="kpi-grid">
+                <div className="card" style={{ padding: 16 }}>
+                  <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>Total de libros (todos)</p>
+                  <p style={{ margin: 0, fontSize: 28, fontWeight: 600 }}>{integer.format(stats.totalBooks || 0)}</p>
+                </div>
+                <div className="card" style={{ padding: 16 }}>
+                  <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>Con precio (para estadísticas)</p>
+                  <p style={{ margin: 0, fontSize: 28, fontWeight: 600 }}>{integer.format(stats.withPriceCount || 0)}</p>
+                </div>
+                <div className="card" style={{ padding: 16 }}>
+                  <p style={{ margin: 0, color: "var(--muted)", fontSize: 14 }}>Valor total (solo con precio)</p>
+                  <p style={{ margin: 0, fontSize: 28, fontWeight: 600 }}>{currency.format(stats.totalValue || 0)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Summary cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Total de libros (todos)</p>
-            <p className="text-2xl font-semibold">{integer.format(stats.totalBooks || 0)}</p>
-          </div>
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Con precio (para estadísticas)</p>
-            <p className="text-2xl font-semibold">{integer.format(stats.withPriceCount || 0)}</p>
-          </div>
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <p className="text-sm text-gray-500">Valor total (solo con precio)</p>
-            <p className="text-2xl font-semibold">{currency.format(stats.totalValue || 0)}</p>
-          </div>
-        </div>
-
-        {/* Books by place */}
-        <section className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <h2 className="text-lg font-semibold mb-2">Libros por lugar de compra (top 20)</h2>
-            <div className="h-72" style={{ height: 320 }}>
+        {/* Secciones de gráficos en grid 2 columnas */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16, marginTop: 16 }}>
+          <section className="card" style={{ gridColumn: "span 12 / span 12" }}>
+            <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 0 }}>Libros por "Purchase Place" (top 20)</h2>
+            <div style={{ height: 320 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={(stats.booksByPlace || []).slice(0, 20)} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -315,16 +355,15 @@ export default function App() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="count" name="Cantidad" />
+                  <Bar dataKey="count" name="Cantidad" fill="#0ea5e9" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </section>
 
-          {/* Value by place */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <h2 className="text-lg font-semibold mb-2">Valor total por lugar de compra (top 20)</h2>
-            <div className="h-72" style={{ height: 320 }}>
+          <section className="card" style={{ gridColumn: "span 12 / span 12" }}>
+            <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 0 }}>Valor total por "Purchase Place" (top 20)</h2>
+            <div style={{ height: 320 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={(stats.valueByPlace || []).slice(0, 20)} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -332,17 +371,17 @@ export default function App() {
                   <YAxis tickFormatter={(v) => compact.format(v)} domain={[0, 'auto']} />
                   <Tooltip formatter={(v) => currency.format(v)} />
                   <Legend />
-                  <Bar dataKey="value" name="Valor" />
+                  <Bar dataKey="value" name="Valor" fill="#22c55e" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
 
-        {/* Monthly purchases count */}
-        <section className="mt-8 bg-white rounded-2xl p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-2">Libros comprados por mes</h2>
-          <div className="h-80" style={{ height: 400 }}>
+        {/* Series temporales */}
+        <section className="card" style={{ marginTop: 16 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 0 }}>Libros por mes</h2>
+          <div style={{ height: 380 }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={stats.purchasesPerMonth || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -350,16 +389,15 @@ export default function App() {
                 <YAxis />
                 <Tooltip formatter={(v) => integer.format(v)} />
                 <Legend />
-                <Line type="monotone" dataKey="count" name="Compras mensuales" />
+                <Line type="monotone" dataKey="count" name="Compras mensuales" stroke="#0ea5e9" />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </section>
 
-        {/* Monthly value sum */}
-        <section className="mt-8 bg-white rounded-2xl p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-2">Valor comprado por mes</h2>
-          <div className="h-80" style={{ height: 400 }}>
+        <section className="card" style={{ marginTop: 16 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 600, marginTop: 0 }}>Valor comprado por mes</h2>
+          <div style={{ height: 380 }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={stats.valuePerMonth || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -367,15 +405,27 @@ export default function App() {
                 <YAxis tickFormatter={(v) => compact.format(v)} domain={[0, 'auto']} />
                 <Tooltip formatter={(v) => currency.format(v)} />
                 <Legend />
-                <Line type="monotone" dataKey="value" name="Valor mensual" />
+                <Line type="monotone" dataKey="value" name="Valor mensual" stroke="#22c55e" />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </section>
 
-        <p className="text-xs text-gray-500 mt-6">
-          Nota: Las estadísticas excluyen filas sin precio, tal como solicitaste. El conteo total de libros incluye todos los registros.
+        <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 16 }}>
+          Nota: Las estadísticas excluyen filas sin precio; el total de libros incluye todos los registros.
         </p>
+
+        <footer style={{ marginTop: 32, paddingTop: 12, borderTop: '1px solid var(--card-border)', color: 'var(--muted)', fontSize: 14 }}>
+          Desarrollado en Cursor por{' '}
+          <a
+            href="https://github.com/JorgeZuluaga/MiTsundoku"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'underline' }}
+          >
+            Jorge I. Zuluaga
+          </a>
+        </footer>
       </div>
     </div>
   );
