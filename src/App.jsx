@@ -292,29 +292,32 @@ export default function App() {
               En el corazón del tsundoku reside la ilusión de encontrar el tiempo para leer lo que anhelamos
             </p>
           </div>
-          <div>
-            <button
-              onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-              style={{
-                padding: "8px 12px",
-                borderRadius: 10,
-                border: `1px solid var(--card-border)`,
-                background: "var(--card-bg)",
-                color: "var(--text)",
-                cursor: "pointer"
-              }}
-            >
-              {theme === "light" ? "Oscuro" : "Claro"}
-            </button>
-          </div>
         </header>
 
-        {/* Intro info box */}
-        <div className="card" style={{ marginBottom: 16 }}>
-          <p style={{ margin: 0 }}>
-            Con esta aplicación podrás ver estadísticas de interés sobre los libros que tienes registrados en tu base
-            de datos de <a href="https://apps.apple.com/us/app/bookbuddy-book-tracker/id395150347" target="_blank" rel="noopener noreferrer">BookBuddy</a>. Para ello descarga la base de datos de la aplicación en formato .csv y sube aquí el archivo. Puedes ver una demostración presionando el botón "Usar datos de prueba". ¡A Tsundokar!
-          </p>
+        {/* Intro info box + theme toggle aside */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, marginBottom: 16 }}>
+          <div className="card">
+            <p style={{ margin: 0 }}>
+              Con esta aplicación podrás ver estadísticas de interés sobre los libros que tienes registrados en tu base
+              de datos de <a href="https://apps.apple.com/us/app/bookbuddy-book-tracker/id395150347" target="_blank" rel="noopener noreferrer">BookBuddy</a>. Para ello descarga la base de datos de la aplicación en formato .csv y sube aquí el archivo. Puedes ver una demostración presionando el botón "Usar datos de prueba". ¡A Tsundokar!
+            </p>
+          </div>
+          <div className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button
+              onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 10,
+                border: `1px solid var(--card-border)`,
+                background: 'var(--card-bg)',
+                color: 'var(--text)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {theme === 'light' ? 'Oscuro' : 'Claro'}
+            </button>
+          </div>
         </div>
 
         {/* Uploader + resumen en un grid de 1-4 columnas responsivo */}
@@ -398,16 +401,15 @@ export default function App() {
           Nota: Las estadísticas excluyen filas sin precio; el total de libros incluye todos los registros.
         </p>
 
-        <footer style={{ marginTop: 32, paddingTop: 12, borderTop: '1px solid var(--card-border)', color: 'var(--muted)', fontSize: 14 }}>
+        <footer style={{ marginTop: 32, paddingTop: 12, borderTop: '1px solid var(--card-border)', color: 'var(--muted)', fontSize: 12, fontStyle: 'italic' }}>
           Desarrollado en Cursor por{' '}
           <a
-            href="https://github.com/JorgeZuluaga/MiTsundoku"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:zuluagajorge@gmail.com"
             style={{ color: 'inherit', textDecoration: 'underline' }}
           >
             Jorge I. Zuluaga
           </a>
+          {'. '}Repositorio del proyecto en GitHub: https://github.com/JorgeZuluaga/MiTsundoku
         </footer>
       </div>
     </div>
