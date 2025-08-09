@@ -8,6 +8,8 @@
   --muted: #64748b;
   --card-bg: #ffffff;
   --card-border: #e5e7eb;
+  --hero-from: #fefce8; /* amber-50 */
+  --hero-to: #e0e7ff;   /* indigo-50 */
 }
 
 /* Tema oscuro */
@@ -17,6 +19,8 @@
   --muted: #94a3b8;   /* slate-400 */
   --card-bg: #0f172a; /* slate-900 */
   --card-border: #1f2937; /* gray-800 */
+  --hero-from: #0f172a; /* slate-900 */
+  --hero-to: #1f2937;   /* slate-800 */
 }
 
 html, body, #root {
@@ -58,4 +62,25 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
   margin-top: 16px;
+}
+
+/* Hero banner */
+.hero {
+  position: relative;
+  border-radius: 16px;
+  padding: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
+}
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.hero-icons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
