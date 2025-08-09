@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: MyBooksStatistics
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    numInstances: 1
+    autoDeploy: true
+    healthCheckPath: /
